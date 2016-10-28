@@ -1,22 +1,15 @@
 import { createStore, applyMiddleware, compose } from 'redux';
 import { autoRehydrate, persistStore } from 'redux-persist';
 import { createNavigationEnabledStore } from '@exponent/ex-navigation';
+import createLogger from 'redux-logger';
 
 import Persist from './persist';
 
 import rootReducer from './reducer';
 let middleware = [];
+const logger = createLogger();
 
-const errorHandler = store => next => action => {
-  try {
-    console.log(action);
-    return next(action);
-  } catch (err) {
-    throw err;
-  }
-};
-
-middleware.push(errorHandler);
+middleware.push(logger);
 
 const createStoreWithNavigation = createNavigationEnabledStore({
   createStore,
@@ -29,7 +22,7 @@ export default () => {
     applyMiddleware(...middleware),
     autoRehydrate()
   );
-  console.log(rootReducer);
+
   store = createStoreWithNavigation(
     rootReducer,
     enhancers
